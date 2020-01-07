@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 const UsersModel = require('../models/Users');
+const passport = require('passport');
 
 /* GET users listing. */
 router.get('/', function (req, res, next) {
@@ -49,11 +50,23 @@ router.post('/sign-in', function (req, res) {
      *  entered the password to the stored hash
      */
     doAuthenticate
-        .then((result = false) => {
+        .then((result) => {
             res.json(result);
         }).catch(err => {
         res.sendStatus(500);
     });
+});
+
+/***
+ * Route for testing only
+ * This is a protected route and can't be accessed unless
+ * the user is authorized.
+ * On all requests pass a Authorization header with
+ * a value of `Bearer token_value`
+ */
+router.get('/protected', passport.authenticate('jwt', {session: false}), function (req, res) {
+    console.log({id: req.user.id}); // You can access the user id by doing that
+    res.json('Success! You can now see this without a token.');
 });
 
 module.exports = router;
