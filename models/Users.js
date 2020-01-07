@@ -1,5 +1,5 @@
-const {Model, DataTypes} = require('sequelize');
-const sequelize = require('./Index');
+const { Model, DataTypes } = require("sequelize");
+const sequelize = require("./Index");
 
 /***
  *  MUST Create the tables manually on the database
@@ -7,43 +7,55 @@ const sequelize = require('./Index');
  */
 
 class Users extends Model {
-    get fullName() {
-        return this.firstname + ' ' + this.lastname;
-    }
+  get fullName() {
+    return this.firstname + " " + this.lastname;
+  }
 
-    set password(password) {
-        // set hash and salt on user creation
-        const hash = password + '@@@';
-        this.setDataValue('hash', hash);
-    }
+  set password(password) {
+    // set hash and salt on user creation
+    const hash = password + "@@@";
+    this.setDataValue("hash", hash);
+  }
 
-    authenticate(username, password) {
-        // hash and compare and return boolean
-    }
+  authenticate(username, password) {
+    // hash and compare and return boolean
+  }
 }
 
 Users.init(
-    {
-        first_name: {type: DataTypes.STRING, allowNull: false},
-        last_name: {type: DataTypes.STRING, allowNull: false},
-        dob: {type: DataTypes.DATE, allowNull: false},
-        gender: {type: DataTypes.ENUM('Male', 'Female', 'Unknown'), defaultValue: 'Unknown'},
-        username: {type: DataTypes.STRING, allowNull: false},
-        hash: {type: DataTypes.STRING, allowNull: false},
-        salt: {type: DataTypes.STRING, allowNull: false},
-        gravatar_id: {type: DataTypes.STRING, allowNull: true, defaultValue: null},
-        gravatar_ext: {type: DataTypes.STRING, allowNull: true, defaultValue: null},
-    }, {
-        sequelize,
-        modelName: 'users',
-        underscored: true,
+  {
+    first_name: { type: DataTypes.STRING, allowNull: false },
+    last_name: { type: DataTypes.STRING, allowNull: false },
+    dob: { type: DataTypes.DATE, allowNull: false },
+    gender: {
+      type: DataTypes.ENUM("Male", "Female", "Unknown"),
+      defaultValue: "Unknown"
+    },
+    username: { type: DataTypes.STRING, allowNull: false },
+    hash: { type: DataTypes.STRING, allowNull: false },
+    salt: { type: DataTypes.STRING, allowNull: false },
+    gravatar_id: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      defaultValue: null
+    },
+    gravatar_ext: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      defaultValue: null
     }
+  },
+  {
+    sequelize,
+    modelName: "users",
+    underscored: true
+  }
 );
 
 // Method 2 via the .addHook() method
-Users.addHook('beforeValidate', (users, options) => {
-    users.hash = 'happy';
-    users.salt = '333';
+Users.addHook("beforeValidate", (users, options) => {
+  users.hash = "happy";
+  users.salt = "333";
 });
 
 // sequelize.sync();
