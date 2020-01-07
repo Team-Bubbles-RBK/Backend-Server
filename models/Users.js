@@ -4,7 +4,7 @@ const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
 
 /***
- *  MUST Create the tables manually on the database
+ *  In Production MUST Create the tables manually on the database
  *  Instead of using sync()
  */
 
