@@ -25,11 +25,17 @@ router.post('/sign-up', function (req, res) {
     let body = req.body;
     // Todo validation for input
     UsersModel.create(body).then(result => {
-        // console.log({result})
-        res.json(result)
+        // res.json(result)
+        // Create a copy of created user info and then remove sensitive info
+        let _resObj = JSON.parse(JSON.stringify(result));
+        delete _resObj['hash'];
+        delete _resObj['salt'];
+        delete _resObj['id'];
+
+        res.status(200).send(_resObj);
     }).catch(err => {
         // console.log({err})
-        res.json(err)
+        res.sendStatus(400);
     });
 });
 
@@ -53,7 +59,7 @@ router.post('/sign-in', function (req, res) {
         .then((result) => {
             res.json(result);
         }).catch(err => {
-        res.sendStatus(500);
+        res.sendStatus(401);
     });
 });
 
