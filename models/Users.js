@@ -13,7 +13,7 @@ class Users extends Model {
     * @params username: String, password: String
     * Authenticate the entered username and password
     * Hash and compare the entered password
-    * return boolean
+    * return JWT token
     * */
     static authenticate(username, password) {
         return this.findOne({
@@ -24,12 +24,11 @@ class Users extends Model {
             const calculatedHash = crypto.pbkdf2Sync(password, result.salt, 10000, 32, 'sha512')
                 .toString('hex');
 
-            // from now on we'll identify the user by the id and the id is the
+            // From now on we'll identify the user by the id and the id is the
             // only personalized value that goes into our token
             if (result.hash === calculatedHash) {
                 let payload = {id: result.id};
-                let token = jwt.sign(payload, 'soFarAway');
-                return token;
+                return jwt.sign(payload, 'soFarAway');
             }
             return false;
         }).catch(err => {
@@ -37,18 +36,6 @@ class Users extends Model {
             return false;
         });
     }
-
-    generateJWT() {
-        const today = new Date();
-        const expirationDate = new Date(today);
-        expirationDate.setDate(today.getDate() + 60);
-
-        return jwt.sign({
-            email: this.email,
-            id: this._id,
-            exp: parseInt(expirationDate.getTime() / 1000, 10),
-        }, 'steveHarris');
-    };
 }
 
 Users.init(
