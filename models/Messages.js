@@ -9,7 +9,6 @@ class Messages extends Model {
 
 Messages.init(
   {
-    userID: this.user.id,
     messageContent: { type: DataTypes.STRING, allowNull: false }
   },
   {

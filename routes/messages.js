@@ -6,7 +6,7 @@ router.get("/", (req, res, next) => {
   res.send("respond with a message");
 });
 
-router.post("/messages", (req, res) => {
+router.post("/", (req, res) => {
   let body = req.body;
   console.log({ body });
 
