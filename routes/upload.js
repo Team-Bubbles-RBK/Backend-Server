@@ -17,7 +17,7 @@ var router = express.Router();
 //form tag in the front-end must have the following atrribute enctype="multipart/form-data"
 //the input field in the front-end form must be type="file" name="gravetar"
 
-router.post('/gravetar', upload.single('gravetar'), function (req, res) {
+router.post('/', upload.single('gravetar'), function (req, res) {
   let uploadedFile = req.file;
   let oldUploadedFileName = uploadedFile.filename;
   let oldUploadedFilePath = uploadedFile.path;
