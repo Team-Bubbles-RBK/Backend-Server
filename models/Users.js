@@ -8,27 +8,24 @@ const crypto = require('crypto');
  */
 
 class Users extends Model {
-    get fullName() {
-        return this.firstname + ' ' + this.lastname;
-    }
-
-    get hashedPassword() {
-        return this.get('hash');
-    }
-
+    /*
+    * @params username: String, password: String
+    * Authenticate the entered username and password
+    * Hash and compare the entered password
+    * return boolean
+    * */
     static authenticate(username, password) {
-        // hash and compare and return boolean
         return this.findOne({
             where: {
                 username: username
             }
         }).then(result => {
-            // console.log({un: result.hash});
-            const calculatedHash = crypto.pbkdf2Sync(password, result.salt, 10000, 32, 'sha512').toString('hex');
-            console.log({uh: result.hash, calculatedHash})
+            const calculatedHash = crypto.pbkdf2Sync(password, result.salt, 10000, 32, 'sha512')
+                .toString('hex');
+
             return result.hash === calculatedHash;
         }).catch(err => {
-            console.log({err});
+            return false;
         });
     }
 
@@ -86,5 +83,6 @@ Users.beforeUpdate((user, options) => {
 
 // Create table if not exist in the database
 sequelize.sync();
+
 // Export the model in order to use it to query the table
 module.exports = Users;

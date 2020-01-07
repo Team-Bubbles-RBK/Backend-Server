@@ -28,20 +28,14 @@ router.post('/sign-up', function (req, res) {
 router.post('/sign-in', function (req, res) {
     // Todo validation
     let {username, password} = req.body;
-    let x = UsersModel.authenticate(username, password);
-    x.then(data => res.json(data));
-    // ;
-    // UsersModel.findOne({
-    //     where: {
-    //         username: username
-    //     }
-    // }).then(result => {
-    //     console.log({result});
-    //     res.json(result);
-    // }).catch(err => {
-    //     console.log({err});
-    //     res.json(err);
-    // });
+    let doAuthenticate = UsersModel.authenticate(username, password);
+
+    doAuthenticate
+        .then((result = false) => {
+            res.json(result);
+        }).catch(err => {
+        res.sendStatus(403);
+    });
 });
 
 module.exports = router;
