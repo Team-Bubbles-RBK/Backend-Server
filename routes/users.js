@@ -9,7 +9,15 @@ router.get('/', function (req, res, next) {
 
 /**
  * POST Route
- * Signup new user to the system.
+ * Sign up new user to the system.
+ *  @param username : String
+ *  @param password : String
+ *  @param first_name : String
+ *  @param last_name : String
+ *  @param hash : String
+ *  @param dob : String
+ *  @param gender : String
+ *  @param username : String
  */
 
 router.post('/sign-up', function (req, res) {
@@ -25,16 +33,27 @@ router.post('/sign-up', function (req, res) {
     });
 });
 
+/***
+ *  Post Route
+ *  Sign in user to the system.
+ *  request body
+ *  @param username : String
+ *  @param password : String
+ */
 router.post('/sign-in', function (req, res) {
     // Todo validation
     let {username, password} = req.body;
     let doAuthenticate = UsersModel.authenticate(username, password);
 
+    /***
+     *  Check for the user in the database and compare
+     *  entered the password to the stored hash
+     */
     doAuthenticate
         .then((result = false) => {
             res.json(result);
         }).catch(err => {
-        res.sendStatus(403);
+        res.sendStatus(500);
     });
 });
 
