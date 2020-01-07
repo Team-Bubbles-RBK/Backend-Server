@@ -1,25 +1,19 @@
-const Sequelize = require("sequelize");
-const sequelize = require("./index")
+const {Model, DataTypes} = require('sequelize');
+const sequelize = require('./index');
+class Bubbles extends Model {}
 
-const Bubble = sequelize.define('bubble',{
-    Bubble_Id :{
-    type : sequelize.INTEGER,
-    autoIncrement : true,
-    allowNull : false,
-    primaryKey : true
-    },
-    name:{
-        type:sequelize.STRING,
-        allowNull : false,
-    },
-    perm_link:{
-        type : sequelize.STRING,
-        allowNull : false
-    },
-    create_At:{
-        type : DataTypes.DATE, 
-        allowNull : false
+Bubbles.init(
+    {
+        name: {type: DataTypes.STRING, allowNull: false},
+        perm_link: {type: DataTypes.STRING, allowNull: false},
+        
+    }, {
+        sequelize,
+        modelName: 'bubble',
+        underscored: true,
     }
-})
+);
 
-module.exports =  Bubble
+
+
+module.exports = Bubbles;
