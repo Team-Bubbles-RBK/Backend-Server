@@ -23,7 +23,6 @@ router.get('/', function (req, res, next) {
 router.post('/sign-up', function (req, res) {
     let body = req.body;
     // Todo validation for input
-    // console.log({body});
     UsersModel.create(body).then(result => {
         // console.log({result})
         res.json(result)

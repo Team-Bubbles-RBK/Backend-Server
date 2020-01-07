@@ -55,6 +55,9 @@ Users.init(
  */
 function hashPassword(password) {
     return new Promise((resolve, reject) => {
+        if (!password) {
+            reject('Invalid password');
+        }
         const salt = crypto.randomBytes(16).toString('hex');
         const hash = crypto.pbkdf2Sync(password, salt, 10000, 32, 'sha512').toString('hex');
         resolve({hash, salt});
