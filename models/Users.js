@@ -12,14 +12,24 @@ class Users extends Model {
         return this.firstname + ' ' + this.lastname;
     }
 
-    set password(password) {
-        // set hash and salt on user creation
-        const hash = password + '@@@';
-        this.setDataValue('hash', hash);
+    get hashedPassword() {
+        return this.get('hash');
     }
 
-    authenticate(username, password) {
+    static authenticate(username, password) {
         // hash and compare and return boolean
+        return this.findOne({
+            where: {
+                username: username
+            }
+        }).then(result => {
+            // console.log({un: result.hash});
+            const calculatedHash = crypto.pbkdf2Sync(password, result.salt, 10000, 32, 'sha512').toString('hex');
+            console.log({uh: result.hash, calculatedHash})
+            return result.hash === calculatedHash;
+        }).catch(err => {
+            console.log({err});
+        });
     }
 
 }
@@ -49,7 +59,7 @@ Users.init(
 function hashPassword(password) {
     return new Promise((resolve, reject) => {
         const salt = crypto.randomBytes(16).toString('hex');
-        const hash = crypto.pbkdf2Sync(password, salt, 10000, 512, 'sha512').toString('hex');
+        const hash = crypto.pbkdf2Sync(password, salt, 10000, 32, 'sha512').toString('hex');
         resolve({hash, salt});
     });
 }
@@ -58,6 +68,16 @@ function hashPassword(password) {
  * Generate hash before inserting to database
  */
 Users.beforeCreate((user, options) => {
+    return hashPassword(user.hash).then(result => {
+        user.hash = result.hash;
+        user.salt = result.salt;
+    });
+});
+
+/**
+ * Generate hash before updating value in the database
+ */
+Users.beforeUpdate((user, options) => {
     return hashPassword(user.hash).then(result => {
         user.hash = result.hash;
         user.salt = result.salt;
