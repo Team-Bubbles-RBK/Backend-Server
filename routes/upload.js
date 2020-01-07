@@ -14,14 +14,13 @@ var router = express.Router();
 
 //form tag in the front-end must have the following atrribute enctype="multipart/form-data"
 //the input field in the front-end form must be type="file" name="gravetar"
-//id must be sent along with the form as req.user_id
 //will need testing the updating functionalities after the database is hooked up.
 
 router.post('/', upload.single('gravetar'), function(req, res) {
   let uploadedFile = req.file;
   let oldUploadedFileName = uploadedFile.originalname;
   let fileNameAsWillBeInTheServer = uploadedFile.filename.toString();
-  // let User_id = req.user_id;
+  let id = req.user.id;
   console.log(fileNameAsWillBeInTheServer)
 
   let validGravetarExtensions = {
@@ -55,7 +54,7 @@ router.post('/', upload.single('gravetar'), function(req, res) {
       gravatar_ext
     }, {
       where: {
-        User_id
+        id
       }
     })
     .then((result) => {
@@ -73,7 +72,7 @@ router.post('/', upload.single('gravetar'), function(req, res) {
         gravatar_ext
       }, {
         where: {
-          User_id
+          id
         }
       })
     })
