@@ -1,6 +1,11 @@
 const {Model, DataTypes} = require('sequelize');
 const sequelize = require('./Index');
 
+/***
+ *  MUST Create the tables manually on the database
+ *  Instead of using sync()
+ */
+
 class Users extends Model {
     get fullName() {
         return this.firstname + ' ' + this.lastname;
@@ -26,8 +31,8 @@ Users.init(
         username: {type: DataTypes.STRING, allowNull: false},
         hash: {type: DataTypes.STRING, allowNull: false},
         salt: {type: DataTypes.STRING, allowNull: false},
-        gravatar_id: {type: DataTypes.STRING, allowNull: false},
-        gravatar_ext: {type: DataTypes.STRING, allowNull: false},
+        gravatar_id: {type: DataTypes.STRING, allowNull: true, defaultValue: null},
+        gravatar_ext: {type: DataTypes.STRING, allowNull: true, defaultValue: null},
     }, {
         sequelize,
         modelName: 'users',
@@ -35,7 +40,13 @@ Users.init(
     }
 );
 
-// sequelize.sync()
+// Method 2 via the .addHook() method
+Users.addHook('beforeValidate', (users, options) => {
+    users.hash = 'happy';
+    users.salt = '333';
+});
+
+// sequelize.sync();
 //     .then(() => Users.create({
 //         username: 'janedoe',
 //         birthday: new Date(1980, 6, 20)

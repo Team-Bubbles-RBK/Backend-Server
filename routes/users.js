@@ -13,8 +13,16 @@ router.get('/', function (req, res, next) {
  */
 
 router.post('/sign-up', function (req, res) {
-  res.json("")
-  // UsersModel.create({})
+    let body = req.body;
+    // Todo validation for input
+    console.log({body});
+    UsersModel.create(body).then(result => {
+        // console.log({result})
+        res.json(result)
+    }).catch(err => {
+        // console.log({err})
+        res.json(err)
+    });
 });
 
 module.exports = router;
