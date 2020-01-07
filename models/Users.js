@@ -1,6 +1,7 @@
 const {Model, DataTypes} = require('sequelize');
 const sequelize = require('./Index');
 const crypto = require('crypto');
+const jwt = require('jsonwebtoken');
 
 /***
  *  MUST Create the tables manually on the database
@@ -23,12 +24,31 @@ class Users extends Model {
             const calculatedHash = crypto.pbkdf2Sync(password, result.salt, 10000, 32, 'sha512')
                 .toString('hex');
 
-            return result.hash === calculatedHash;
+            // from now on we'll identify the user by the id and the id is the
+            // only personalized value that goes into our token
+            if (result.hash === calculatedHash) {
+                let payload = {id: result.id};
+                let token = jwt.sign(payload, 'soFarAway');
+                return token;
+            }
+            return false;
         }).catch(err => {
+            console.log({err});
             return false;
         });
     }
 
+    generateJWT() {
+        const today = new Date();
+        const expirationDate = new Date(today);
+        expirationDate.setDate(today.getDate() + 60);
+
+        return jwt.sign({
+            email: this.email,
+            id: this._id,
+            exp: parseInt(expirationDate.getTime() / 1000, 10),
+        }, 'steveHarris');
+    };
 }
 
 Users.init(
@@ -85,7 +105,7 @@ Users.beforeUpdate((user, options) => {
 });
 
 // Create table if not exist in the database
-sequelize.sync();
+// sequelize.sync();
 
 // Export the model in order to use it to query the table
 module.exports = Users;
