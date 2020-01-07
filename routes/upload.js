@@ -3,13 +3,9 @@ const UsersModel = require('../models/Users');
 const multer = require('multer');
 const Promise = require("bluebird");
 const fs = require('fs');
-const crypto = require('crypto');
 const path = require('path');
 
-
-
-var rename = Promise.promisify(fs.rename);
-var randomString = Promise.promisify(crypto.randomBytes)
+var unlink = Promise.promisify(fs.unlink)
 
 var upload = multer({
   dest: 'uploads/'
@@ -18,37 +14,58 @@ var router = express.Router();
 
 //form tag in the front-end must have the following atrribute enctype="multipart/form-data"
 //the input field in the front-end form must be type="file" name="gravetar"
+//id must be sent along with the form as req.user_id
+//will need testing the updating functionalities after the database is hooked up.
 
 router.post('/', upload.single('gravetar'), function(req, res) {
   let uploadedFile = req.file;
-  let oldUploadedFileName = uploadedFile.filename;
-  let oldUploadedFilePath = uploadedFile.path;
-  let validGravatarExtensions = {
+  let oldUploadedFileName = uploadedFile.originalname;
+  let fileNameAsWillBeInTheServer = uploadedFile.filename.toString();
+  // let User_id = req.user_id;
+  console.log(fileNameAsWillBeInTheServer)
+
+  let validGravetarExtensions = {
     ".jpg": 1,
     ".jpeg": 1,
     ".png": 1
   }
 
+  console.log("line 33", {
+    uploadedFile,
+    oldUploadedFileName,
+    fileNameAsWillBeInTheServer
+  })
 
-  if (!uploadedFile || !oldUploadedFileName || !oldUploadedFilePath) {
+  if (!uploadedFile) {
     res.statusMessage = 'Not found';
     return;
   }
 
-  let gravatar_ext = path.extname(oldUploadedFilePath);
-  if (!validGravatarExtensions[fileExtension]) {
+  let gravatar_ext = path.extname(oldUploadedFileName);
+  let gravatar_id = fileNameAsWillBeInTheServer;
+  let tempAvetarID
+
+  if (!validGravetarExtensions[gravatar_ext]) {
     res.statusMessage = 'Invalid image format';
     return;
   }
 
-  let User_id = "id of the user --to be found in the cookies"
-  let gravatar_id
-
-
-  randomString(16)
-    .then((str) => {
-      gravatar_id = str;
-      return
+  UsersModel.findOne({
+      gravatar_id,
+      gravatar_ext
+    }, {
+      where: {
+        User_id
+      }
+    })
+    .then((result) => {
+      console.log({
+        result
+      });
+      if (!result) {
+        throw result
+      }
+      tempAvetarID = result
     })
     .then(() => {
       return UsersModel.update({
@@ -64,7 +81,8 @@ router.post('/', upload.single('gravetar'), function(req, res) {
       console.log({
         result
       });
-      return rename(`${__dirname}/${oldUploadedFileName}${gravatar_ext}`, `${__dirname}/${gravatar_id}${gravatar_ext}`)
+      //perhaps should add the extension part
+      return unlink(`uploads/${tempAvetarID}`)
     })
     .then((data) => {
       console.log({
