@@ -5,7 +5,29 @@ const Users = require("./Users");
 const Bubbles = require('./Bubbles');
 
 class Invitations extends Model {
-    get result() {
+    /***
+     * This function gets the result of the voting for
+     * an invitation.
+     * @param id
+     * @returns {Promise<T>}
+     */
+    static result(id) {
+        return this.findByPk(
+            1,
+            {
+                include: [
+                    {model: Votes}
+                ]
+            })
+            .then(result => {
+                // Access the related votes for an invitation and return the value
+                return result.Votes.reduce((acc, vote) => {
+                    return acc && vote.result;
+                }, true);
+            })
+            .catch(err => {
+                return err;
+            });
     }
 }
 
