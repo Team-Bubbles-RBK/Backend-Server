@@ -16,7 +16,7 @@ Tokens.init(
 
 
 
-sequelize
-.sync()
-.then(res => console.log("created"))
+// sequelize
+// .sync()
+// .then(res => console.log("created"))
 module.exports = Tokens;

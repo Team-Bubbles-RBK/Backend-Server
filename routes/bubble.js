@@ -39,7 +39,9 @@ router.post("/create",(req,res)=>{
         let dateNow = moment(Date.now()).format("YYYY-MM-DD HH:mm:ss")
         res.forEach(elm=>{
             let diffBetweenDate = moment.utc(moment(dateNow).diff(moment(elm.dataValues.created_at,"DD/MM/YYYY HH:mm:ss"))).format("HH")
+            console.log(diffBetweenDate)
             if(diffBetweenDate === "24"){
+                //for testing
                 TokensModel.destroy({
                     where: {
                         created_at : elm.dataValues.created_at
