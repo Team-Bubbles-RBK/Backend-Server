@@ -71,7 +71,7 @@ router.post('/sign-in', function (req, res) {
  * a value of `Bearer token_value`
  */
 router.get('/protected', passport.authenticate('jwt', {session: false}), function (req, res) {
-    console.log({id: req.user.id}); // You can access the user id by doing that
+    // console.log({id: req.user.id}); // You can access the user id by doing that
     res.json('Success! You can now see this without a token.');
 });
 

@@ -32,7 +32,7 @@ class Users extends Model {
             }
             return false;
         }).catch(err => {
-            console.log({err});
+            console.error({err});
             return false;
         });
     }
