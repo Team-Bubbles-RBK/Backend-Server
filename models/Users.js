@@ -54,6 +54,12 @@ Users.init(
         modelName: 'users',
         underscored: true,
     }
+  },
+  {
+    sequelize,
+    modelName: "users",
+    underscored: true
+  }
 );
 
 /**
