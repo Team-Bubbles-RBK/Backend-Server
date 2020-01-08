@@ -76,13 +76,17 @@ router.post('/', passport.authenticate('jwt', {session: false}), upload.single('
       if (!result) {throw result};
       return unlink(`../uploads/${tempValue[gravatar_id]}${tempValue[gravatar_ext]}`)
     })
+    .then((result) => {
+      if (!result) {
+        throw err
+      }
+      res.status(201).end()
+    })
     .catch((err) => {
       console.log({err})
-      res.json(err)
+      res.status(500).end()
     })
-    .finally(() => {
-      res.end()
-    })
+
 
 });
 
