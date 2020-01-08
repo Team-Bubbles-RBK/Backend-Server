@@ -1,21 +1,18 @@
-const { Model, DataTypes } = require("sequelize");
+const {Model, DataTypes} = require("sequelize");
 const sequelize = require("./Index");
 
 class Messages extends Model {
-  get message() {
-    return this.messageContent;
-  }
 }
 
 Messages.init(
-  {
-    messageContent: { type: DataTypes.STRING, allowNull: false }
-  },
-  {
-    sequelize,
-    modelName: "messages",
-    underscored: true
-  }
+    {
+        messageContent: {type: DataTypes.STRING, allowNull: false}
+    },
+    {
+        sequelize,
+        modelName: "messages",
+        underscored: true
+    }
 );
 
 // Create table if not exist in the database
