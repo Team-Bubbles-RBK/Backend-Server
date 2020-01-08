@@ -109,7 +109,11 @@ let user_bubble = sequelize.define(
             primaryKey: true,
             autoIncrement: true
         },
-        isAccepted: DataTypes.BOOLEAN
+        isAccepted: {
+            type: DataTypes.BOOLEAN,
+            defaultValue: false,
+            allowNull: false
+        }
     },
     {
         underscored: true,
