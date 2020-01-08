@@ -4,6 +4,9 @@ const multer = require('multer');
 const Promise = require("bluebird");
 const fs = require('fs');
 const path = require('path');
+const passport = require('passport');
+
+
 
 var unlink = Promise.promisify(fs.unlink)
 
@@ -16,12 +19,11 @@ var router = express.Router();
 //the input field in the front-end form must be type="file" name="gravetar"
 //will need testing the updating functionalities after the database is hooked up.
 
-router.post('/', upload.single('gravetar'), function(req, res) {
+router.post('/', passport.authenticate('jwt', {session: false}), upload.single('gravetar'), function(req, res) {
   let uploadedFile = req.file;
-  let oldUploadedFileName = uploadedFile.originalname;
+  let oldUploadedFileName = uploadedFile.originalname.toString();
   let fileNameAsWillBeInTheServer = uploadedFile.filename.toString();
-  let id = req.user.id;
-  console.log(fileNameAsWillBeInTheServer)
+  let id = req.user.id.toString();
 
   let validGravetarExtensions = {
     ".jpg": 1,
@@ -37,34 +39,27 @@ router.post('/', upload.single('gravetar'), function(req, res) {
 
   if (!uploadedFile) {
     res.statusMessage = 'Not found';
+    res.status(500).end();
     return;
   }
 
-  let gravatar_ext = path.extname(oldUploadedFileName);
+  let gravatar_ext = path.extname(oldUploadedFileName.toLowerCase());
   let gravatar_id = fileNameAsWillBeInTheServer;
-  let tempAvetarID
+  let tempValue
 
   if (!validGravetarExtensions[gravatar_ext]) {
     res.statusMessage = 'Invalid image format';
+    res.status(500).end();
     return;
   }
 
-  UsersModel.findOne({
-      gravatar_id,
-      gravatar_ext
-    }, {
-      where: {
-        id
+  UsersModel.findByPk(id)
+    .then((userInstance) => {
+      //console.log(userInstance);
+      if (!userInstance) {
+        throw userInstance
       }
-    })
-    .then((result) => {
-      console.log({
-        result
-      });
-      if (!result) {
-        throw result
-      }
-      tempAvetarID = result
+      tempValue = userInstance
     })
     .then(() => {
       return UsersModel.update({
@@ -77,23 +72,44 @@ router.post('/', upload.single('gravetar'), function(req, res) {
       })
     })
     .then((result) => {
-      console.log({
-        result
-      });
-      //perhaps should add the extension part
-      return unlink(`uploads/${tempAvetarID}`)
+      if (!result) {throw result};
+      return unlink(`uploads/${tempValue[gravatar_id]}${tempValue[gravatar_ext]}`)
     })
-    .then((data) => {
-      console.log({
-        data
-      })
-    }).catch((err) => {
-      console.log({
-        err
-      })
-      // res.json(err)
+    .catch((err) => {
+      console.log({err})
+      res.json(err)
+    })
+    .finally(() => {
+      res.end()
     })
 
 });
+
+
+// const Sequelize = require('sequelize')
+// var sequelize = new Sequelize(
+//     'bubblerbk',
+//     'bubbleadmin',
+//     'bubbleadmin',
+//     {
+//         port: 3306,
+//         host: 'db4free.net',
+//         logging: console.log,
+//         dialect: 'mysql',
+//         define: {
+//             timestamps: false
+//         }
+//     }
+// );
+//
+// console.log(Sequelize)
+//
+// sequelize.Model.findOne({
+//     where: {
+//       firstname: "Ahmed"
+//     }
+//   }).then((data) => {
+//     console.log(data)
+//   })
 
 module.exports = router;
