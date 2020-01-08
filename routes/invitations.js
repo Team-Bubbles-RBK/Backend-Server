@@ -6,12 +6,20 @@ router.get("/", (req, res, next) => {
     res.send("respond from invitations");
 });
 
-// Get result of Voting
+/**
+ * Get result of Voting
+ * Expects bubble_id as get parameter
+ */
 router.get('/voting/:id', (req, res) => {
-  let invite_id = req.params.id;
-  InvitationsModels.result(invite_id);
-      // .then()
-  res.json(invite_id);
+    // Todo validation
+    let invite_id = req.params.id;
+
+    InvitationsModels.result(invite_id)
+        .then(result => {
+            res.status(200).send(result);
+        }).catch(_ => {
+        res.statusCode(500);
+    });
 });
 
 router.post("generate", (req, res) => {

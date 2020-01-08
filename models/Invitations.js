@@ -13,7 +13,7 @@ class Invitations extends Model {
      */
     static result(id) {
         return this.findByPk(
-            1,
+            id,
             {
                 include: [
                     {model: Votes}
@@ -21,9 +21,12 @@ class Invitations extends Model {
             })
             .then(result => {
                 // Access the related votes for an invitation and return the value
-                return result.Votes.reduce((acc, vote) => {
-                    return acc && vote.result;
-                }, true);
+                if (result) {
+                    return result.Votes.reduce((acc, vote) => {
+                        return acc && vote.result;
+                    }, true);
+                }
+                return false;
             })
             .catch(err => {
                 return err;
