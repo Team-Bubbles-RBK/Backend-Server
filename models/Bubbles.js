@@ -1,6 +1,7 @@
 const {Model, DataTypes} = require('sequelize');
 const sequelize = require('./index');
-const Tokens = require("./Tokens")
+const Tokens = require("./Tokens");
+const Messages = require('./Messages');
 
 class Bubbles extends Model {
 }
@@ -16,9 +17,11 @@ Bubbles.init(
         underscored: true,
     }
 );
+
+// Relationship between models
 Bubbles.hasMany(Tokens);
 Tokens.belongsTo(Bubbles);
-
+Bubbles.hasMany(Messages);
 
 sequelize.sync();
 module.exports = Bubbles;
