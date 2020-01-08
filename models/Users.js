@@ -92,7 +92,7 @@ Users.beforeUpdate((user, options) => {
 });
 
 // Create table if not exist in the database
-// sequelize.sync();
+sequelize.sync();
 
 // Export the model in order to use it to query the table
 module.exports = Users;
