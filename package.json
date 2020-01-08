@@ -11,10 +11,24 @@
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
     "express": "~4.16.1",
+    "express-validator": "^6.3.1",
     "morgan": "~1.9.1",
     "multer": "^1.4.2",
     "mysql2": "^2.1.0",
     "node-sass-middleware": "0.11.0",
     "sequelize": "^5.21.3"
-  }
+  },
+  "main": "app.js",
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Soug-crypto/Backend-Server.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Soug-crypto/Backend-Server/issues"
+  },
+  "homepage": "https://github.com/Soug-crypto/Backend-Server#readme",
+  "description": ""
 }
