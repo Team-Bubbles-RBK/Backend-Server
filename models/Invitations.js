@@ -32,6 +32,16 @@ class Invitations extends Model {
                 return err;
             });
     }
+
+    static remove(id) {
+        return this.destroy({
+            where: {
+                id
+            }
+        }).then(result => {
+            return result > 0;
+        });
+    }
 }
 
 Invitations.init(
