@@ -24,12 +24,6 @@ Votes.init(
   }
 );
 
-Bubbles.hasMany(Votes);
-Votes.belongsTo(Bubbles);
-
-Votes.hasMany(Users);
-Users.belongsTo(Votes, { as: "invitee" }, { as: "invitor" });
-
 // Export the model in order to use it to query the table
 sequelize.sync();
 module.exports = Votes;

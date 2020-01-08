@@ -19,5 +19,4 @@ Messages.init(
 sequelize.sync();
 
 // Export the model in order to use it to query the table
-sequelize.sync();
 module.exports = Messages;

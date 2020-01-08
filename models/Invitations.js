@@ -1,26 +1,32 @@
-const { Model, DataTypes } = require("sequelize");
+const {Model, DataTypes} = require("sequelize");
 const sequelize = require("./Index");
 const Votes = require("./Votes");
 const Users = require("./Users");
+const Bubbles = require('./Bubbles');
 
 class Invitations extends Model {
-  get result() {}
+    get result() {
+    }
 }
 
 Invitations.init(
-  {},
-  {
-    sequelize,
-    modelName: "invitations",
-    underscored: true
-  }
+    {},
+    {
+        sequelize,
+        modelName: "invitations",
+        underscored: true
+    }
 );
 
-Invitations.hasMany(Votes);
+// Define relationships between models
+Users.hasMany(Votes, {as: 'inviter', foreignKey: 'inviter_id'});
 Votes.belongsTo(Invitations);
 
-// Users.hasMany(Invitations);
-// Invitations.belongsTo(Users, { as: "invitee" });
+Invitations.hasMany(Votes);
+Invitations.belongsTo(Users, {as: "invitee", foreignKey: "invitee_id"});
+Invitations.belongsTo(Bubbles);
+
+Bubbles.hasMany(Invitations);
 
 // Export the model in order to use it to query the table
 sequelize.sync();
