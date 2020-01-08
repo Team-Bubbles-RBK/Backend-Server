@@ -1,8 +1,6 @@
 var express = require("express");
 var router = express.Router();
 const MessagesModel = require("../models/Messages");
-const sequelize = require("../models/index");
-sequelize.sync().then(data => console.log(data));
 
 router.get("/", (req, res, next) => {
   res.send("respond with a message");
