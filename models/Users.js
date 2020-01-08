@@ -3,6 +3,7 @@ const sequelize = require('./Index');
 const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
 const Messages = require('./Messages');
+const Bubbles = require('./Bubbles');
 
 /***
  *  In Production MUST Create the tables manually on the database
@@ -98,6 +99,25 @@ sequelize.sync();
 // Define relationships between models
 Users.hasMany(Messages);
 Messages.belongsTo(Users);
+
+// Association table for user_bubble
+let user_bubble = sequelize.define(
+    'user_bubble',
+    {
+        id: {
+            type: DataTypes.INTEGER,
+            primaryKey: true,
+            autoIncrement: true
+        },
+        isAccepted: DataTypes.BOOLEAN
+    },
+    {
+        underscored: true,
+    }
+);
+
+Users.belongsToMany(Bubbles, {through: user_bubble});
+Bubbles.belongsToMany(Users, {through: user_bubble});
 
 // Export the model in order to use it to query the table
 module.exports = Users;

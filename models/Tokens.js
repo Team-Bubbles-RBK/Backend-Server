@@ -1,12 +1,13 @@
 const {Model, DataTypes} = require('sequelize');
 const sequelize = require('./index');
 
-class Tokens extends Model {}
+class Tokens extends Model {
+}
 
 Tokens.init(
     {
         temp_Link: {type: DataTypes.STRING, allowNull: false},
-        
+
     }, {
         sequelize,
         modelName: 'tokens',
@@ -15,8 +16,5 @@ Tokens.init(
 );
 
 
-
-// sequelize
-// .sync()
-// .then(res => console.log("created"))
+sequelize.sync();
 module.exports = Tokens;
