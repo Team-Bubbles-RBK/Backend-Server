@@ -1,14 +1,13 @@
-var express = require('express');
-var router = express.Router();
-const Bubble = require('../models/Bubbles')
+const express = require('express');
+const router = express.Router();
+const BubbleModel = require('../models/Bubbles')
+const TokensModel =require("../models/Tokens")
 const sequelize = require("../models/index")
-var randomstring = require("randomstring");
+const randomstring = require("randomstring");
+const crypto = require('crypto');
+const moment = require('moment')
 
 
-//to create a data base based on my schemas
-sequelize
-.sync()
-.then(res => console.log(res))
 
 
 router.get("/",(req,res)=>{
@@ -19,14 +18,38 @@ router.post("/create",(req,res)=>{
     let data = req.body;
     let bubbleName = data.name;
     let permHash = randomstring.generate({
-        length: data.name.length,
-        charset: data.name
+        length: 16,
+        charset: data.name.toUpperCase()
       });
-    Bubble.create({
-        name : bubbleName,
-        perm_link : permHash
-    })
+      let mykey = crypto.createCipher('aes-128-cbc', permHash);
+      let mystr = mykey.update(permHash, 'utf8', 'hex')
+      mystr += mykey.final('hex');
 
+
+
+    BubbleModel.create({
+        name : bubbleName,
+        perm_link : mystr
+    })
+    TokensModel.create({
+        temp_Link : permHash
+    })
+    //drop column when it pass 24 hour
+    TokensModel.findAll({attributes: ["created_at"]}).then(function (res) {
+        let dateNow = moment(Date.now()).format("YYYY-MM-DD HH:mm:ss")
+        res.forEach(elm=>{
+            let diffBetweenDate = moment.utc(moment(dateNow).diff(moment(elm.dataValues.created_at,"DD/MM/YYYY HH:mm:ss"))).format("HH")
+            if(diffBetweenDate === "24"){
+                TokensModel.destroy({
+                    where: {
+                        created_at : elm.dataValues.created_at
+                    }
+                })
+            }
+        })  
+      });
+    
+    
     res.send('bubble created')
 })
 
