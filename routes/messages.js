@@ -3,32 +3,20 @@ var router = express.Router();
 const MessagesModel = require("../models/Messages");
 
 router.get("/", (req, res, next) => {
-  res.send("respond with a message");
+    res.send("respond with a message");
 });
 
 router.post("/store", (req, res) => {
-  let body = req.body;
-  console.log({ body });
+    let body = req.body;
+    let msg = body.messageContent;
 
-  let msg = body.messageContent;
-  MessagesModel.create({
-    messageContent: msg
-  })
-    .then(message => {
-      res.json(msg);
-    })
-    .catch(err => {
-      res.json(err);
+    MessagesModel.create({
+        messageContent: msg
+    }).then(message => {
+        res.sendStatus(201);
+    }).catch(err => {
+        res.sendStatus(500);
     });
-  res.send(msg);
 });
-// let msg = body.messageContent;
-// MessagesModel.create(msg)
-//   .then(message => {
-//     res.json(msg);
-//   })
-//   .catch(err => {
-//     res.json(err);
-//   });
 
 module.exports = router;
