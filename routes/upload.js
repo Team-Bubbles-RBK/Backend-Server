@@ -86,30 +86,14 @@ router.post('/', passport.authenticate('jwt', {session: false}), upload.single('
 });
 
 
-// const Sequelize = require('sequelize')
-// var sequelize = new Sequelize(
-//     'bubblerbk',
-//     'bubbleadmin',
-//     'bubbleadmin',
-//     {
-//         port: 3306,
-//         host: 'db4free.net',
-//         logging: console.log,
-//         dialect: 'mysql',
-//         define: {
-//             timestamps: false
-//         }
-//     }
-// );
-//
-// console.log(Sequelize)
-//
-// sequelize.Model.findOne({
-//     where: {
-//       firstname: "Ahmed"
-//     }
-//   }).then((data) => {
-//     console.log(data)
-//   })
+
+
+UsersModel.findOne({
+    where: {
+      first_name: "Ahmed"
+    }
+  }).then((data) => {
+    console.log(data)
+  })
 
 module.exports = router;
