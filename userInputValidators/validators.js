@@ -12,12 +12,10 @@ var userSignUpValidatorArray = [
   check('password').exists().trim().escape().isString().isLength({
     min: 8
   }).withMessage('Password must at least have 8 characters'),
-  check('first_name').exists().trim().escape().isString().withMessage('First name must at least have 6 characters'),
-  check('last_name').exists().trim().escape().isString().withMessage('Last name must at least have 6 characters'),
-  check('hash').exists().trim().escape().isString().withMessage('Hash must be a string'),
+  check('first_name').exists().trim().escape().isString().withMessage('Invalid First name'),
+  check('last_name').exists().trim().escape().isString().withMessage('Invalid Last name'),
   check('dob').exists().trim().escape().isString().withMessage('DOB must be a string'),
   check('gender').exists().trim().escape().isString().withMessage('gender must be a string')
-
 ];
 
 
@@ -44,7 +42,6 @@ var validatorfunction = (req, res) => {
       errors: errorsFound.mapped()
     })) : (res.send({}););
 };
-
 
 
 
