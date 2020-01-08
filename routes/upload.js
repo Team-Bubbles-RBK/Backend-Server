@@ -18,6 +18,7 @@ var router = express.Router();
 //form tag in the front-end must have the following atrribute enctype="multipart/form-data"
 //the input field in the front-end form must be type="file" name="gravetar"
 //will need testing the updating functionalities after the database is hooked up.
+//add a default value in the for the gravetar.
 
 router.post('/', passport.authenticate('jwt', {session: false}), upload.single('gravetar'), function(req, res) {
   let uploadedFile = req.file;
@@ -39,7 +40,7 @@ router.post('/', passport.authenticate('jwt', {session: false}), upload.single('
 
   if (!uploadedFile) {
     res.statusMessage = 'Not found';
-    res.status(500).end();
+    res.status(404).end();
     return;
   }
 
@@ -49,7 +50,7 @@ router.post('/', passport.authenticate('jwt', {session: false}), upload.single('
 
   if (!validGravetarExtensions[gravatar_ext]) {
     res.statusMessage = 'Invalid image format';
-    res.status(500).end();
+    res.status(422).end();
     return;
   }
 
@@ -73,7 +74,7 @@ router.post('/', passport.authenticate('jwt', {session: false}), upload.single('
     })
     .then((result) => {
       if (!result) {throw result};
-      return unlink(`uploads/${tempValue[gravatar_id]}${tempValue[gravatar_ext]}`)
+      return unlink(`../uploads/${tempValue[gravatar_id]}${tempValue[gravatar_ext]}`)
     })
     .catch((err) => {
       console.log({err})
@@ -84,8 +85,6 @@ router.post('/', passport.authenticate('jwt', {session: false}), upload.single('
     })
 
 });
-
-
 
 
 UsersModel.findOne({
