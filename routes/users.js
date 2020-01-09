@@ -95,17 +95,17 @@ router.get("/:id/bubbles", function (req, res) {
 /***
  * GET Route
  * Returns the user info (authenticated only)
+ * Including array of invitations that has array of votes
+ * and bubble information for each invitation
  */
 router.get('/profile', passport.authenticate('jwt', {session: false}), function (req, res) {
     const id = req.user.id;
-    // Get the invitations
 
     UsersModel.getUserInfo(id)
         .then(user => {
             res.json(user);
         })
         .catch(err => {
-            console.log({err})
             res.status(500).send();
         });
 });
