@@ -2,6 +2,7 @@ var express = require("express");
 var router = express.Router();
 const UsersModel = require('../models/Users');
 const passport = require('passport');
+const validators = require('../userInputValidators/validators')
 
 /* GET users listing. */
 router.get("/", function(req, res, next) {
@@ -20,15 +21,13 @@ router.get("/", function(req, res, next) {
  *  @param gender : String
  *  @param username : String
  */
+// ,validators['userSignUpValidatorArray']
+router.post('/sign-up',validators['userSignUpValidatorArray'], validators['validatorfunction'], function (req, res) {
 
-router.post('/sign-up', function (req, res) {
     let body = req.body;
-    // Todo validation for input
     UsersModel.create(body).then(result => {
-        // console.log({result})
         res.json(result)
     }).catch(err => {
-        // console.log({err})
         res.json(err)
     });
 });
@@ -40,8 +39,8 @@ router.post('/sign-up', function (req, res) {
  *  @param username : String
  *  @param password : String
  */
-router.post('/sign-in', function (req, res) {
-    // Todo validation
+router.post('/sign-in',validators['userSignInValidatorArray'],validators['validatorfunction'], function (req, res) {
+
     let {username, password} = req.body;
     let doAuthenticate = UsersModel.authenticate(username, password);
 

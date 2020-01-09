@@ -44,11 +44,11 @@ Users.init(
         last_name: {type: DataTypes.STRING, allowNull: false},
         dob: {type: DataTypes.DATE, allowNull: false},
         gender: {type: DataTypes.ENUM('Male', 'Female', 'Unknown'), defaultValue: 'Unknown'},
-        username: {type: DataTypes.STRING, allowNull: false},
+        username: {type: DataTypes.STRING, allowNull: false, unique: true },
         hash: {type: DataTypes.STRING, allowNull: true},
         salt: {type: DataTypes.STRING, allowNull: true},
-        gravatar_id: {type: DataTypes.STRING, allowNull: true, defaultValue: null},
-        gravatar_ext: {type: DataTypes.STRING, allowNull: true, defaultValue: null},
+        gravatar_id: {type: DataTypes.STRING, allowNull: true, defaultValue: 'defaultBubble'},
+        gravatar_ext: {type: DataTypes.STRING, allowNull: true, defaultValue: '.jpg'},
     }, {
         sequelize,
         modelName: 'users',
@@ -92,7 +92,7 @@ Users.beforeUpdate((user, options) => {
 });
 
 // Create table if not exist in the database
-// sequelize.sync();
+sequelize.sync();
 
 // Export the model in order to use it to query the table
 module.exports = Users;

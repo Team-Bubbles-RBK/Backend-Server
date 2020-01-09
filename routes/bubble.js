@@ -5,8 +5,8 @@ const TokensModel =require("../models/Tokens")
 const sequelize = require("../models/index")
 const randomstring = require("randomstring");
 const crypto = require('crypto');
-const moment = require('moment')
-
+const moment = require('moment');
+const validators = require('../userInputValidators/validators');
 
 
 
@@ -14,7 +14,7 @@ router.get("/",(req,res)=>{
     res.send("test")
 })
 
-router.post("/create",(req,res)=>{
+router.post("/create", validators['bubbleCreateValidatorArray'], validators['validatorfunction'], (req,res)=>{
     let data = req.body;
     let bubbleName = data.name;
     let permHash = randomstring.generate({
@@ -48,10 +48,10 @@ router.post("/create",(req,res)=>{
                     }
                 })
             }
-        })  
+        })
       });
-    
-    
+
+
     res.send('bubble created')
 })
 
