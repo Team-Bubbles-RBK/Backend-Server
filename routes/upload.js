@@ -21,9 +21,11 @@ var router = express.Router();
 //will need testing the updating functionalities after the database is hooked up.
 //add a default value in the for the gravetar.
 
- //
+//
 
-router.post('/', passport.authenticate('jwt', {session: false}), upload.single('gravetar'), function(req, res) {
+router.post('/', passport.authenticate('jwt', {
+  session: false
+}), upload.single('gravetar'), function(req, res) {
 
   let uploadedFile = req.file;
   let oldUploadedFileName = uploadedFile.originalname.toString();
@@ -74,7 +76,7 @@ router.post('/', passport.authenticate('jwt', {session: false}), upload.single('
       })
     })
     .then((result) => {
-       return unlink(path.resolve(__dirname,`../uploads/${tempValue["dataValues"]["gravatar_id"]}`))
+      return unlink(path.resolve(__dirname, `../uploads/${tempValue["dataValues"]["gravatar_id"]}`))
     })
     .then((result) => {
       if (!result) {
@@ -83,7 +85,9 @@ router.post('/', passport.authenticate('jwt', {session: false}), upload.single('
       res.status(201).end()
     })
     .catch((err) => {
-      console.log({err})
+      console.log({
+        err
+      })
       res.status(500).end()
     })
 
