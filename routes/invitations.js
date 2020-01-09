@@ -58,4 +58,8 @@ router.post("/generate", (req, res) => {
         });
 });
 
+router.post('/vote', function (req, res) {
+    const {invitationId, invitee_id} = req.body;
+    InvitationsModel.vote(invitationId, invitee_id)
+});
 module.exports = router;

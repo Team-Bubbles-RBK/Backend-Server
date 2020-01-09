@@ -63,6 +63,10 @@ class Invitations extends Model {
             },
         });
     }
+
+    static vote(invi){
+
+    }
 }
 
 Invitations.init(

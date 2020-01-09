@@ -83,6 +83,11 @@ class Bubbles extends Model {
             });
     }
 
+    /***
+     *  This method return all info for a bubble
+     * @param bubbleId
+     * @return {Promise<Bubbles | null>}
+     */
     static getBubbleInfo(bubbleId) {
         return this.findByPk(bubbleId, {
             include: [{model: Invitations}]

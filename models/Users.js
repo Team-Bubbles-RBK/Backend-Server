@@ -205,7 +205,7 @@ let user_bubble = sequelize.define(
 Users.belongsToMany(Bubbles, {through: user_bubble});
 Bubbles.belongsToMany(Users, {through: user_bubble});
 
-Users.hasMany(Votes, {as: 'inviter', foreignKey: 'inviter_id'});
+Users.hasMany(Votes, {as: 'voter', foreignKey: 'voter_id'});
 Invitations.belongsTo(Users, {as: "invitee", foreignKey: "invitee_id"});
 Users.hasMany(Invitations, {foreignKey: "invitee_id"});
 

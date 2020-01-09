@@ -11,7 +11,6 @@ router.get("/:id", (req, res) => {
             res.json(bubble);
         })
         .catch(err => {
-            console.log({err});
             res.sendStatus(500);
         });
 });
