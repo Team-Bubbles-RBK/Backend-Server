@@ -48,16 +48,26 @@ class Bubbles extends Model {
             });
     }
 
+    /***
+     *  Creates a temp token for a bubble
+     * @param bubble_id
+     * @return {Promise<T>}
+     */
     static generateToken(bubble_id) {
-        const salt = crypto.randomBytes(16).toString('hex');
-        const tempLink = crypto.pbkdf2Sync(bubble_id, salt, 10000, 16, 'sha512').toString('hex');
-        console.log({tempLink});
-        return Tokens.create({
-            temp_link: tempLink,
-            bubbleId: bubble_id
-        }).then(result => {
-            return tempLink;
-        });
+        return this.findByPk(bubble_id)
+            .then(bubble => {
+                if (bubble) {
+                    const salt = crypto.randomBytes(16).toString('hex');
+                    const tempLink = crypto.pbkdf2Sync(bubble_id, salt, 10000, 16, 'sha512').toString('hex');
+
+                    return Tokens.create({
+                        temp_link: tempLink,
+                        bubbleId: bubble_id
+                    });
+                } else {
+                    throw Error('Not found');
+                }
+            });
     }
 }
 
