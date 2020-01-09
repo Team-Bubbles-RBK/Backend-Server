@@ -6,7 +6,7 @@ class Tokens extends Model {
 
 Tokens.init(
     {
-        temp_Link: {type: DataTypes.STRING, allowNull: false},
+        temp_link: {type: DataTypes.STRING, allowNull: false},
 
     }, {
         sequelize,

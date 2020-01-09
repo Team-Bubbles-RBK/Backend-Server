@@ -20,15 +20,16 @@ router.post("/create", (req, res) => {
 });
 
 // Generate temp Token for a bubble
-router.post('/:id/temp-token', function (req, res) {
+router.post('/temp-token', function (req, res) {
     // Todo validation
 
-    const id = req.params.id;
-    BubbleModel.generateToken(id)
+    const {bubbleId} = req.body;
+    BubbleModel.generateToken(bubbleId)
         .then(result => {
-
+            res.send(result);
         })
         .catch(err => {
+            console.log({err});
             res.sendStatus(500);
         });
 });

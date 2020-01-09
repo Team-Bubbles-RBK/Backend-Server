@@ -27,6 +27,11 @@ class Bubbles extends Model {
         });
     }
 
+    /****
+     * Create a new bubble
+     * @param name
+     * @returns {Promise<Bubbles>}
+     */
     static createBubble(name) {
         let permHash = randomString.generate({
             length: 16,
@@ -36,15 +41,23 @@ class Bubbles extends Model {
         let mystr = mykey.update(permHash, 'utf8', 'hex');
         mystr += mykey.final('hex');
 
-        return this.create({
-            name,
-            perm_link: mystr
-        })
+        return this.create(
+            {
+                name,
+                perm_link: mystr
+            });
     }
 
     static generateToken(bubble_id) {
         const salt = crypto.randomBytes(16).toString('hex');
-        const hash = crypto.pbkdf2Sync(password, salt, 10000, 16, 'sha512').toString('hex');
+        const tempLink = crypto.pbkdf2Sync(bubble_id, salt, 10000, 16, 'sha512').toString('hex');
+        console.log({tempLink});
+        return Tokens.create({
+            temp_link: tempLink,
+            bubbleId: bubble_id
+        }).then(result => {
+            return tempLink;
+        });
     }
 }
 
