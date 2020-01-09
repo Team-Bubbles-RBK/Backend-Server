@@ -43,6 +43,8 @@ router.delete('/:id', (req, res) => {
  * @param bubble_id
  * @param invitee_id
  */
+
+// This to be used when the user sign up or sign up following a invitation link
 router.post("/generate", (req, res) => {
     //Todo validation
     let {bubble_id, invitee_id} = req.body;

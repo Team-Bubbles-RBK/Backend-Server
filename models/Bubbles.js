@@ -69,7 +69,8 @@ class Bubbles extends Model {
             .then(bubble => {
                 if (bubble) {
                     const salt = crypto.randomBytes(16).toString('hex');
-                    const tempLink = crypto.pbkdf2Sync(bubble_id, salt, 10000, 16, 'sha512').toString('hex');
+                    const tempLink = crypto.pbkdf2Sync(bubble_id, salt, 10000, 16, 'sha512')
+                        .toString('hex');
 
                     return Tokens.create({
                         temp_link: tempLink,

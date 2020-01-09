@@ -4,6 +4,8 @@ const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
 const Messages = require('./Messages');
 const Bubbles = require('./Bubbles');
+const Invitations = require('./Invitations');
+const Votes = require('./Votes');
 
 /***
  *  In Production MUST Create the tables manually on the database
@@ -85,6 +87,13 @@ class Users extends Model {
             .then(bubble => {
                 return bubble.addUser(userId);
             });
+    }
+
+    static getUserInfo(userId) {
+        return this.findByPk(userId,
+            {
+                include: [{model: Invitations}]
+            })
     }
 }
 
@@ -170,6 +179,10 @@ let user_bubble = sequelize.define(
 
 Users.belongsToMany(Bubbles, {through: user_bubble});
 Bubbles.belongsToMany(Users, {through: user_bubble});
+
+Users.hasMany(Votes, {as: 'inviter', foreignKey: 'inviter_id'});
+Invitations.belongsTo(Users, {as: "invitee", foreignKey: "invitee_id"});
+Users.hasMany(Invitations, {foreignKey: "invitee_id"});
 
 // Export the model in order to use it to query the table
 module.exports = Users;

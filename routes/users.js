@@ -98,12 +98,14 @@ router.get("/:id/bubbles", function (req, res) {
  */
 router.get('/profile', passport.authenticate('jwt', {session: false}), function (req, res) {
     const id = req.user.id;
+    // Get the invitations
 
-    UsersModel.findByPk(id)
+    UsersModel.getUserInfo(id)
         .then(user => {
             res.json(user);
         })
         .catch(err => {
+            console.log({err})
             res.status(500).send();
         });
 });
