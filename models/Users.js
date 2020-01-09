@@ -1,7 +1,11 @@
 const {Model, DataTypes} = require('sequelize');
-const sequelize = require('./Index');
+const sequelize = require('./index');
 const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
+const Messages = require('./Messages');
+const Bubbles = require('./Bubbles');
+const Invitations = require('./Invitations');
+const Votes = require('./Votes');
 
 /***
  *  In Production MUST Create the tables manually on the database
@@ -32,9 +36,89 @@ class Users extends Model {
             }
             return false;
         }).catch(err => {
-            console.log({err});
+            console.error({err});
             return false;
         });
+    }
+
+    /***
+     * Get all bubbles joined by a user
+     * @param user_id
+     * @returns {Promise<boolean>}
+     */
+    static getAllBubbles(user_id) {
+        return this.findByPk(user_id, {
+            include: [{model: Bubbles}]
+        })
+            .then(result => {
+                return result.bubbles;
+            });
+    }
+
+    /****
+     * This functions allows users to leave
+     *  bubbles
+     * @param userId
+     * @param bubbleId
+     * @return {Promise<T>}
+     */
+    static leaveBubble(userId, bubbleId) {
+        return this.findByPk(userId,
+            {
+                include: [{model: Bubbles}]
+            })
+            .then(user => {
+                return user.removeBubble(bubbleId);
+            });
+    }
+
+    /***
+     *  Adds a user to a bubble
+     * @param userId
+     * @param bubbleId
+     * @return {void|PromiseLike<any>|Promise<any>}
+     */
+    static joinBubble(userId, bubbleId) {
+        return Bubbles.findByPk(
+            bubbleId,
+            {
+                include: [{model: Users}]
+            })
+            .then(bubble => {
+                return bubble.addUser(userId);
+            });
+    }
+
+    /***
+     * This method returns all info of the logged in user
+     * - All user info
+     * - Array of invitations
+     * - Nested inside of each invitation array of vote results
+     * - Nested inside of each invitation property of Bubble
+     * @param userId
+     * @return {Promise<Users | null>}
+     */
+    static getUserInfo(userId) {
+        return this.findByPk(userId,
+            {
+                include: [
+                    {
+                        model: Invitations,
+                        include: [
+                            {model: Bubbles},
+                            {
+                                model: Votes,
+                                attributes: ['result'],
+                            } // Nested Eager loading to get the votes for each invitation
+                        ]
+                    }, {
+                        model: Bubbles,
+                    }
+                ],
+                attributes: {
+                    exclude: ['hash', 'salt']
+                }
+            });
     }
 }
 
@@ -53,7 +137,7 @@ Users.init(
         sequelize,
         modelName: 'users',
         underscored: true,
-  },
+    },
 );
 
 /**
@@ -93,6 +177,37 @@ Users.beforeUpdate((user, options) => {
 
 // Create table if not exist in the database
 sequelize.sync();
+
+// Define relationships between models
+Users.hasMany(Messages);
+Messages.belongsTo(Users);
+
+// Association table for user_bubble
+let user_bubble = sequelize.define(
+    'user_bubble',
+    {
+        id: {
+            type: DataTypes.INTEGER,
+            primaryKey: true,
+            autoIncrement: true
+        },
+        isAccepted: {
+            type: DataTypes.BOOLEAN,
+            defaultValue: false,
+            allowNull: false
+        }
+    },
+    {
+        underscored: true,
+    }
+);
+
+Users.belongsToMany(Bubbles, {through: user_bubble});
+Bubbles.belongsToMany(Users, {through: user_bubble});
+
+Users.hasMany(Votes, {as: 'voter', foreignKey: 'voter_id'});
+Invitations.belongsTo(Users, {as: "invitee", foreignKey: "invitee_id"});
+Users.hasMany(Invitations, {foreignKey: "invitee_id"});
 
 // Export the model in order to use it to query the table
 module.exports = Users;

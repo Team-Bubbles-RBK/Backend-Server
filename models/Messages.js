@@ -1,23 +1,36 @@
-const { Model, DataTypes } = require("sequelize");
-const sequelize = require("./Index");
+const {Model, DataTypes} = require("sequelize");
+const sequelize = require("./index");
 
 class Messages extends Model {
-  get message() {
-    return this.messageContent;
-  }
+    /***
+     *  This function stores a message
+     * @param content
+     * @param user_id
+     * @param bubble_id
+     * @returns {Promise<Messages>}
+     */
+    static store(content, user_id, bubble_id) {
+        return this.create({
+            content,
+            userId: user_id,
+            bubbleId: bubble_id
+        });
+    }
 }
 
 Messages.init(
-  {
-    messageContent: { type: DataTypes.STRING, allowNull: false }
-  },
-  {
-    sequelize,
-    modelName: "messages",
-    underscored: true
-  }
+    {
+        content: {type: DataTypes.STRING, allowNull: false}
+    },
+    {
+        sequelize,
+        modelName: "messages",
+        underscored: true
+    }
 );
 
-// Export the model in order to use it to query the table
+// Create table if not exist in the database
 sequelize.sync();
+
+// Export the model in order to use it to query the table
 module.exports = Messages;
