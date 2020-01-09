@@ -78,8 +78,8 @@ router.get('/protected', passport.authenticate('jwt', {session: false}), functio
  * Get the list of the bubbles
  * joined by a user joined
  */
-router.get("/:id/bubbles", function (req, res) {
-    // Todo validation
+router.get("/:id/bubbles", validators['userIdValidatorArray'], validators['validatorfunction'], function (req, res) {
+
     const user_id = req.params.id;
 
     UsersModel.getAllBubbles(user_id)
@@ -97,7 +97,7 @@ router.get("/:id/bubbles", function (req, res) {
  * Including array of invitations that has array of votes
  * and bubble information for each invitation
  */
-router.get('/profile', passport.authenticate('jwt', {session: false}), function (req, res) {
+router.get('/profile', validators['userIdValidatorArray'], validators['validatorfunction'], passport.authenticate('jwt', {session: false}), function (req, res) {
     const id = req.user.id;
 
     UsersModel.getUserInfo(id)
