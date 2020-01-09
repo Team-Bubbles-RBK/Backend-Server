@@ -3,8 +3,17 @@ const router = express.Router();
 const BubbleModel = require('../models/Bubbles');
 const UserModel = require('../models/Users');
 
-router.get("/", (req, res) => {
-    res.send("test");
+router.get("/:id", (req, res) => {
+    const id = req.params.id;
+
+    BubbleModel.getBubbleInfo(id)
+        .then(bubble => {
+            res.json(bubble);
+        })
+        .catch(err => {
+            console.log({err});
+            res.sendStatus(500);
+        });
 });
 
 router.post("/create", (req, res) => {
@@ -62,7 +71,6 @@ router.post('/join', function (req, res) {
 
     UserModel.joinBubble(user_id, bubble_id)
         .then(result => {
-            console.log({result});
             res.status(200).send();
         })
         .catch(err => {

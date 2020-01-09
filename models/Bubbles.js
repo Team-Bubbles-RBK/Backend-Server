@@ -2,6 +2,7 @@ const {Model, DataTypes} = require('sequelize');
 const sequelize = require('./index');
 const Tokens = require("./Tokens");
 const Messages = require('./Messages');
+const Invitations = require('./Invitations');
 const moment = require('moment');
 const crypto = require('crypto');
 const randomString = require("randomstring");
@@ -81,6 +82,12 @@ class Bubbles extends Model {
                 }
             });
     }
+
+    static getBubbleInfo(bubbleId) {
+        return this.findByPk(bubbleId, {
+            include: [{model: Invitations}]
+        });
+    }
 }
 
 Bubbles.init(
@@ -99,6 +106,9 @@ Bubbles.init(
 Bubbles.hasMany(Tokens);
 Tokens.belongsTo(Bubbles);
 Bubbles.hasMany(Messages);
+
+Bubbles.hasMany(Invitations);
+Invitations.belongsTo(Bubbles);
 
 sequelize.sync();
 module.exports = Bubbles;

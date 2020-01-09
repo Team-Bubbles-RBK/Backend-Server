@@ -80,9 +80,9 @@ Votes.belongsTo(Invitations);
 
 Invitations.hasMany(Votes);
 // Invitations.belongsTo(Users, {as: "invitee", foreignKey: "invitee_id"});
-Invitations.belongsTo(Bubbles);
+// Invitations.belongsTo(Bubbles);
 
-Bubbles.hasMany(Invitations);
+// Bubbles.hasMany(Invitations);
 
 // Export the model in order to use it to query the table
 sequelize.sync();
