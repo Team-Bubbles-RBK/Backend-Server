@@ -1,5 +1,5 @@
 const {Model, DataTypes} = require("sequelize");
-const sequelize = require("./Index");
+const sequelize = require("./index");
 
 class Messages extends Model {
 }

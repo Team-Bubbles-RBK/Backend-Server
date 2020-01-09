@@ -1,5 +1,5 @@
 const {Model, DataTypes} = require('sequelize');
-const sequelize = require('./Index');
+const sequelize = require('./index');
 const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
 const Messages = require('./Messages');
