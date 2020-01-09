@@ -12,17 +12,16 @@ jwtOptions['passReqToCallback'] = true; // pass request object to the strategy
 
 // Create Strategy for web token
 let strategy = new JwtStrategy(jwtOptions, function (req, jwt_payload, next) {
-    let user = usersModel.findByPk(jwt_payload.id)
+    usersModel.findByPk(jwt_payload.id, {attributes: ['id']})
         .then(found => {
             if (found) {
-                req.user = user;
                 next(null, found);
             } else {
                 next(null, false);
             }
         }).catch(err => {
-            next(null, false);
-        });
+        next(null, false);
+    });
 });
 
 // use the strategy
