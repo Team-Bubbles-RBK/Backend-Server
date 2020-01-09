@@ -64,8 +64,20 @@ class Invitations extends Model {
         });
     }
 
-    static vote(invi){
-
+    /***
+     *  This method casts a vote for an user of the bubble
+     * @param invitationId
+     * @param voterId
+     * @param result
+     * @return {Promise<Votes>}
+     */
+    static vote(invitationId, voterId, result) {
+        // update user_bubble if all accept
+        return Votes.create({
+            invitationId,
+            voter_id: voterId,
+            result
+        });
     }
 }
 

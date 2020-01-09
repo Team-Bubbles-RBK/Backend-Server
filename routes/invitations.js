@@ -58,8 +58,17 @@ router.post("/generate", (req, res) => {
         });
 });
 
+
 router.post('/vote', function (req, res) {
-    const {invitationId, invitee_id} = req.body;
-    InvitationsModel.vote(invitationId, invitee_id)
+    // Todo validation
+    const {invitationId, voterId, vote} = req.body;
+
+    InvitationsModel.vote(invitationId, voterId, vote)
+        .then(result => {
+            res.json(result);
+        })
+        .catch(err => {
+            res.sendStatus(500);
+        })
 });
 module.exports = router;
