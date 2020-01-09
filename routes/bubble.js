@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const BubbleModel = require('../models/Bubbles');
+const UserModel = require('../models/Users');
 
 router.get("/", (req, res) => {
     res.send("test");
@@ -31,6 +32,20 @@ router.post('/temp-token', function (req, res) {
     BubbleModel.generateToken(bubbleId)
         .then(result => {
             res.send(result.temp_link);
+        })
+        .catch(err => {
+            res.sendStatus(500);
+        });
+});
+
+router.delete('/leave', function (req, res) {
+    // Todo validation
+    const {user_id, bubble_id} = req.body;
+
+    UserModel.leaveBubble(user_id, bubble_id)
+        .then(result => {
+            console.log({result});
+            res.status(200).send();
         })
         .catch(err => {
             res.sendStatus(500);

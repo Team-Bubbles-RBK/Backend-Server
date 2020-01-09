@@ -52,6 +52,17 @@ class Users extends Model {
                 return result.bubbles;
             });
     }
+
+    static leaveBubble(userId, bubbleId) {
+        // find the user then find the bubble and remove it
+        return this.findByPk(userId,
+            {
+                include: [{model: Bubbles}]
+            })
+            .then(user => {
+                return user.removeBubble(bubbleId);
+            });
+    }
 }
 
 Users.init(
