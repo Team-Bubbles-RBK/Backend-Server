@@ -34,21 +34,26 @@ router.delete('/:id', (req, res) => {
             }
         })
         .catch(err => {
-            res.status(500).send(err);
+            res.sendStatus(500);
         });
 });
 
+/**
+ * If not exist generate an invitation for a user
+ * @param bubble_id
+ * @param invitee_id
+ */
 router.post("/generate", (req, res) => {
     //Todo validation
     let {bubble_id, invitee_id} = req.body;
+
     InvitationsModel.generate(invitee_id, bubble_id)
         .then(result => {
-            res.status(201).send(result);
+            res.sendStatus(201);
         })
         .catch(err => {
-            console.log({err})
-            res.sendStatus(500);
-        })
+            res.sendStatus(422);
+        });
 });
 
 module.exports = router;

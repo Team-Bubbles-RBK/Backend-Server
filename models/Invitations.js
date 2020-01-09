@@ -49,13 +49,19 @@ class Invitations extends Model {
         });
     }
 
+    /****
+     *  This function finds or create an invitation record
+     * @param invitee_id
+     * @param bubble_id
+     * @returns {Promise<[Invitations, boolean]>}
+     */
     static generate(invitee_id, bubble_id) {
         return this.findOrCreate({
             where: {
                 invitee_id,
                 bubbleId: bubble_id // this relation is mapped by Sequelize without any alias
             },
-        })
+        });
     }
 }
 
