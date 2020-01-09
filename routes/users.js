@@ -75,11 +75,14 @@ router.get('/protected', passport.authenticate('jwt', {session: false}), functio
     res.json('Success! You can now see this without a token.');
 });
 
-// Todo Get all Bubbles for a user
+/**
+ * Get the list of the bubbles
+ * joined by a user joined
+ */
 router.get("/:id/bubbles", function (req, res) {
     // Todo validation
-
     const user_id = req.params.id;
+    
     UsersModel.getAllBubbles(user_id)
         .then(result => {
             res.json(result);
