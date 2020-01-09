@@ -2,6 +2,12 @@ const express = require('express');
 const router = express.Router();
 const BubbleModel = require('../models/Bubbles');
 const UserModel = require('../models/Users');
+const validators = require('../userInputValidators/validators');
+
+
+router.get("/", (req, res) => {
+    res.send("test")
+});
 
 router.get("/:id", (req, res) => {
     const id = req.params.id;
@@ -15,10 +21,9 @@ router.get("/:id", (req, res) => {
         });
 });
 
-router.post("/create", (req, res) => {
-    // Todo validation
-
+router.post("/create", validators['bubbleCreateValidatorArray'], validators['validatorfunction'], (req, res) => {
     let {name} = req.body;
+
     BubbleModel.createBubble(name)
         .then(result => {
             res.status(200).send(result);

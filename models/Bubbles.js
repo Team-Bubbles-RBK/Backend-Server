@@ -107,6 +107,7 @@ Bubbles.init(
     }
 );
 
+
 // Relationship between models
 Bubbles.hasMany(Tokens);
 Tokens.belongsTo(Bubbles);
