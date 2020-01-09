@@ -89,11 +89,36 @@ class Users extends Model {
             });
     }
 
+    /***
+     * This method returns all info of the logged in user
+     * - All user info
+     * - Array of invitations
+     * - Nested inside of each invitation array of vote results
+     * - Nested inside of each invitation property of Bubble
+     * @param userId
+     * @return {Promise<Users | null>}
+     */
     static getUserInfo(userId) {
         return this.findByPk(userId,
             {
-                include: [{model: Invitations}]
-            })
+                include: [
+                    {
+                        model: Invitations,
+                        include: [
+                            {model: Bubbles},
+                            {
+                                model: Votes,
+                                attributes: ['result'],
+                            } // Nested Eager loading to get the votes for each invitation
+                        ]
+                    }, {
+                        model: Bubbles,
+                    }
+                ],
+                attributes: {
+                    exclude: ['hash', 'salt']
+                }
+            });
     }
 }
 
