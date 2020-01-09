@@ -82,13 +82,29 @@ router.get('/protected', passport.authenticate('jwt', {session: false}), functio
 router.get("/:id/bubbles", function (req, res) {
     // Todo validation
     const user_id = req.params.id;
-    
+
     UsersModel.getAllBubbles(user_id)
         .then(result => {
             res.json(result);
         })
         .catch(err => {
             res.sendStatus(422);
+        });
+});
+
+/***
+ * GET Route
+ * Returns the user info (authenticated only)
+ */
+router.get('/profile', passport.authenticate('jwt', {session: false}), function (req, res) {
+    const id = req.user.id;
+
+    UsersModel.findByPk(id)
+        .then(user => {
+            res.json(user);
+        })
+        .catch(err => {
+            res.status(500).send();
         });
 });
 
