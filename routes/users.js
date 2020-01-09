@@ -4,8 +4,8 @@ const UsersModel = require('../models/Users');
 const passport = require('passport');
 
 /* GET users listing. */
-router.get("/", function(req, res, next) {
-  res.send("respond with a resource");
+router.get("/", function (req, res, next) {
+    res.send("respond with a resource");
 });
 
 /**
@@ -73,6 +73,20 @@ router.post('/sign-in', function (req, res) {
 router.get('/protected', passport.authenticate('jwt', {session: false}), function (req, res) {
     // console.log({id: req.user.id}); // You can access the user id by doing that
     res.json('Success! You can now see this without a token.');
+});
+
+// Todo Get all Bubbles for a user
+router.get("/:id/bubbles", function (req, res) {
+    // Todo validation
+
+    const user_id = req.params.id;
+    UsersModel.getAllBubbles(user_id)
+        .then(result => {
+            res.json(result);
+        })
+        .catch(err => {
+            res.sendStatus(422);
+        });
 });
 
 module.exports = router;

@@ -38,6 +38,20 @@ class Users extends Model {
             return false;
         });
     }
+
+    /***
+     * Get all bubbles joined by a user
+     * @param user_id
+     * @returns {Promise<boolean>}
+     */
+    static getAllBubbles(user_id) {
+        return this.findByPk(user_id, {
+            include: [{model: Bubbles}]
+        })
+            .then(result => {
+                return result.bubbles;
+            });
+    }
 }
 
 Users.init(
