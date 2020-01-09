@@ -1,5 +1,6 @@
 const { Sequelize } = require("sequelize");
 
+
 const sequelize = new Sequelize('bubblerbk','bubbleadmin','bubbleadmin',
 {
     port: 3306,
