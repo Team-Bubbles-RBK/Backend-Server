@@ -4,12 +4,9 @@ const {
 } = require('express-validator');
 
 
-//not connected the the routes
-
-
 var userSignUpValidatorArray = [
   check('username').exists({checkFalsy: true}).trim().escape().isString().isEmail().normalizeEmail().withMessage('Invalid Email'),
-  check('password').exists({checkFalsy: true}).trim().escape().isString().isLength({
+  check('hash').exists({checkFalsy: true}).trim().escape().isString().isLength({
     min: 8
   }).withMessage('Password must at least have 8 characters'),
   check('first_name').exists({checkFalsy: true}).trim().escape().isString().withMessage('Invalid First name'),
@@ -21,7 +18,7 @@ var userSignUpValidatorArray = [
 
 var userSignInValidatorArray = [
   check('username').exists({checkFalsy: true}).trim().escape().isString().isEmail().normalizeEmail().withMessage('Invalid Email'),
-  check('password').exists({checkFalsy: true}).trim().escape().isString().isLength({
+  check('hash').exists({checkFalsy: true}).trim().escape().isString().isLength({
     min: 8
   }).withMessage('Password must at least have 8 characters')
 ];
@@ -38,9 +35,9 @@ var bubbleCreateValidatorArray = [check('name').exists({checkFalsy: true}).trim(
 var validatorfunction = (req, res) => {
   const errorsFound = validationResult(req);
   !errorsFound.isEmpty() ? (
-    return res.status(422).json({
+     res.status(422).json({
       errors: errorsFound.mapped()
-    })) : (res.send({}););
+    })) : (res.send({}));
 };
 
 

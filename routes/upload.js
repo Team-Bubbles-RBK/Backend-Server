@@ -8,7 +8,8 @@ const passport = require('passport');
 
 
 
-var unlink = Promise.promisify(fs.unlink)
+var unlink = Promise.promisify(fs.unlink);
+var stat = Promise.promisify(fs.stat);
 
 var upload = multer({
   dest: 'uploads/'
@@ -20,10 +21,14 @@ var router = express.Router();
 //will need testing the updating functionalities after the database is hooked up.
 //add a default value in the for the gravetar.
 
+ //
+
 router.post('/', passport.authenticate('jwt', {session: false}), upload.single('gravetar'), function(req, res) {
+
   let uploadedFile = req.file;
   let oldUploadedFileName = uploadedFile.originalname.toString();
   let fileNameAsWillBeInTheServer = uploadedFile.filename.toString();
+
   let id = req.user.id.toString();
 
   let validGravetarExtensions = {
@@ -56,10 +61,6 @@ router.post('/', passport.authenticate('jwt', {session: false}), upload.single('
 
   UsersModel.findByPk(id)
     .then((userInstance) => {
-      //console.log(userInstance);
-      if (!userInstance) {
-        throw userInstance
-      }
       tempValue = userInstance
     })
     .then(() => {
@@ -73,8 +74,7 @@ router.post('/', passport.authenticate('jwt', {session: false}), upload.single('
       })
     })
     .then((result) => {
-      if (!result) {throw result};
-      return unlink(`../uploads/${tempValue[gravatar_id]}${tempValue[gravatar_ext]}`)
+       return unlink(path.resolve(__dirname,`../uploads/${tempValue["dataValues"]["gravatar_id"]}`))
     })
     .then((result) => {
       if (!result) {
@@ -87,16 +87,10 @@ router.post('/', passport.authenticate('jwt', {session: false}), upload.single('
       res.status(500).end()
     })
 
-
 });
 
 
-UsersModel.findOne({
-    where: {
-      first_name: "Ahmed"
-    }
-  }).then((data) => {
-    console.log(data)
-  })
+
+
 
 module.exports = router;
