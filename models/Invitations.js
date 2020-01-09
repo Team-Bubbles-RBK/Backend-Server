@@ -33,6 +33,12 @@ class Invitations extends Model {
             });
     }
 
+    /***
+     * This methods removes an invitation
+     * from the system
+     * @param id
+     * @returns {Promise<boolean>}
+     */
     static remove(id) {
         return this.destroy({
             where: {
@@ -41,6 +47,15 @@ class Invitations extends Model {
         }).then(result => {
             return result > 0;
         });
+    }
+
+    static generate(invitee_id, bubble_id) {
+        return this.findOrCreate({
+            where: {
+                invitee_id,
+                bubbleId: bubble_id // this relation is mapped by Sequelize without any alias
+            },
+        })
     }
 }
 

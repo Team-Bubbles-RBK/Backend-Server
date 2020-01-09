@@ -1,6 +1,6 @@
 var express = require("express");
 var router = express.Router();
-const InvitationsModels = require("../models/Invitations");
+const InvitationsModel = require("../models/Invitations");
 
 router.get("/", (req, res, next) => {
     res.send("respond from invitations");
@@ -13,7 +13,7 @@ router.get("/", (req, res, next) => {
 router.get('/voting/result/:id', (req, res) => {
     let invite_id = req.params.id;
 
-    InvitationsModels.result(invite_id)
+    InvitationsModel.result(invite_id)
         .then(result => {
             res.status(200).send(result);
         })
@@ -25,9 +25,8 @@ router.get('/voting/result/:id', (req, res) => {
 router.delete('/:id', (req, res) => {
     let id = req.params.id;
 
-    InvitationsModels.remove(id)
+    InvitationsModel.remove(id)
         .then(result => {
-            console.log({result})
             if (result) {
                 res.sendStatus(200);
             } else {
@@ -39,7 +38,17 @@ router.delete('/:id', (req, res) => {
         });
 });
 
-router.post("generate", (req, res) => {
+router.post("/generate", (req, res) => {
+    //Todo validation
+    let {bubble_id, invitee_id} = req.body;
+    InvitationsModel.generate(invitee_id, bubble_id)
+        .then(result => {
+            res.status(201).send(result);
+        })
+        .catch(err => {
+            console.log({err})
+            res.sendStatus(500);
+        })
 });
 
 module.exports = router;
