@@ -1,11 +1,10 @@
 const express = require('express');
 const router = express.Router();
-const BubbleModel = require('../models/Bubbles')
-const TokensModel =require("../models/Tokens")
-const sequelize = require("../models/index")
+const BubbleModel = require('../models/Bubbles');
+const TokensModel =require("../models/Tokens");
 const randomstring = require("randomstring");
 const crypto = require('crypto');
-const moment = require('moment')
+const moment = require('moment');
 
 
 
