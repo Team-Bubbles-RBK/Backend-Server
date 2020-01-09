@@ -38,11 +38,29 @@ router.post('/temp-token', function (req, res) {
         });
 });
 
+/***
+ *  DELETE Method
+ *  allows user to leave a bubble
+ */
 router.delete('/leave', function (req, res) {
     // Todo validation
     const {user_id, bubble_id} = req.body;
 
     UserModel.leaveBubble(user_id, bubble_id)
+        .then(result => {
+            console.log({result});
+            res.status(200).send();
+        })
+        .catch(err => {
+            res.sendStatus(500);
+        });
+});
+
+router.post('/join', function (req, res) {
+    // Todo validation
+    const {user_id, bubble_id} = req.body;
+
+    UserModel.joinBubble(user_id, bubble_id)
         .then(result => {
             console.log({result});
             res.status(200).send();

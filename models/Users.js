@@ -53,14 +53,37 @@ class Users extends Model {
             });
     }
 
+    /****
+     * This functions allows users to leave
+     *  bubbles
+     * @param userId
+     * @param bubbleId
+     * @return {Promise<T>}
+     */
     static leaveBubble(userId, bubbleId) {
-        // find the user then find the bubble and remove it
         return this.findByPk(userId,
             {
                 include: [{model: Bubbles}]
             })
             .then(user => {
                 return user.removeBubble(bubbleId);
+            });
+    }
+
+    /***
+     *  Adds a user to a bubble
+     * @param userId
+     * @param bubbleId
+     * @return {void|PromiseLike<any>|Promise<any>}
+     */
+    static joinBubble(userId, bubbleId) {
+        return Bubbles.findByPk(
+            bubbleId,
+            {
+                include: [{model: Users}]
+            })
+            .then(bubble => {
+                return bubble.addUser(userId);
             });
     }
 }
