@@ -7,24 +7,32 @@ const crypto = require('crypto');
 const randomString = require("randomstring");
 
 class Bubbles extends Model {
-    // Todo update this code or check if it works
+    /****
+     * Drop all expired Temp tokens
+     * (Tokens with age greater than 24HR)
+     */
     static dropExpiredTokens() {
-        //drop column when it pass 24 hour
-        Tokens.findAll({attributes: ["created_at"]}).then(function (res) {
-            let dateNow = moment(Date.now()).format("YYYY-MM-DD HH:mm:ss")
-            res.forEach(elm => {
-                let diffBetweenDate = moment.utc(moment(dateNow).diff(moment(elm.dataValues.created_at, "DD/MM/YYYY HH:mm:ss"))).format("HH")
-                console.log(diffBetweenDate)
-                if (diffBetweenDate === "24") {
-                    //for testing
-                    Tokens.destroy({
-                        where: {
-                            created_at: elm.dataValues.created_at
-                        }
-                    })
-                }
+        Tokens.findAll()
+            .then(function (tokens) {
+                let dateNow = moment();
+
+                tokens.forEach(token => {
+                    let tokenCreated = moment(token.createdAt);
+                    let difference = dateNow.diff(tokenCreated, 'h');
+
+                    if (difference >= 24) {
+                        Tokens.destroy(
+                            {
+                                where: {
+                                    createdAt: token.createdAt
+                                }
+                            });
+                    }
+                });
             })
-        });
+            .catch(err => {
+                console.log({err});
+            });
     }
 
     /****
@@ -51,9 +59,12 @@ class Bubbles extends Model {
     /***
      *  Creates a temp token for a bubble
      * @param bubble_id
-     * @return {Promise<T>}
+     * @return {Promise<Bubbles>}
      */
     static generateToken(bubble_id) {
+        // Remove expired tokens
+        this.dropExpiredTokens();
+
         return this.findByPk(bubble_id)
             .then(bubble => {
                 if (bubble) {
