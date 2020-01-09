@@ -2,11 +2,25 @@ const {Model, DataTypes} = require("sequelize");
 const sequelize = require("./index");
 
 class Messages extends Model {
+    /***
+     *  This function stores a message
+     * @param content
+     * @param user_id
+     * @param bubble_id
+     * @returns {Promise<Messages>}
+     */
+    static store(content, user_id, bubble_id) {
+        return this.create({
+            content,
+            userId: user_id,
+            bubbleId: bubble_id
+        });
+    }
 }
 
 Messages.init(
     {
-        messageContent: {type: DataTypes.STRING, allowNull: false}
+        content: {type: DataTypes.STRING, allowNull: false}
     },
     {
         sequelize,

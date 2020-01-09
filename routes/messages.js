@@ -7,12 +7,14 @@ router.get("/", (req, res, next) => {
 });
 
 router.post("/store", (req, res) => {
-    let body = req.body;
-    let msg = body.messageContent;
+    let {content, user_id, bubble_id} = req.body;
+    // Todo validation
 
-    MessagesModel.create({
-        messageContent: msg
-    }).then(message => {
+    MessagesModel.store(
+        content,
+        user_id,
+        bubble_id
+    ).then(message => {
         res.sendStatus(201);
     }).catch(err => {
         res.sendStatus(500);
