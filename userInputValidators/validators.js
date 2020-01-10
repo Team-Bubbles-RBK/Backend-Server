@@ -44,7 +44,7 @@ var userIdValidatorArray =[check('user_id').exists({
 }).trim().escape().isString().withMessage('Invalid User ID')]
 
 var messagesStoreValidatorArray = [
-  check('messageContent').exists({
+  check('content').exists({
     checkFalsy: true
   }).trim().escape().withMessage('Message content must not be empty least'),
 ];
