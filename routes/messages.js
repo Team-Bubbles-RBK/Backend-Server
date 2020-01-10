@@ -11,20 +11,14 @@ router.get("/", (req, res, next) => {
 router.post("/store", (req, res) => {
     // Todo fix validation problem
     let {content, user_id, bubble_id} = req.body;
-    console.log({content, user_id, bubble_id});
 
     MessagesModel.store(
         content,
         user_id,
         bubble_id
     ).then(message => {
-        // console.log({message});
-        console.log({io});
-
-        // io.getIO().sockets.in(bubble_id)
-        //     .emit('message', {message: 'from server'});
-        io.getIO().sockets.to(bubble_id).emit('message', message)
-
+        // Get the IO object and send message to all users in the bubble
+        io.getIO().sockets.to(bubble_id).emit('message', message);
         res.sendStatus(201);
     }).catch(err => {
         console.log({err});
