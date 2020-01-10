@@ -102,12 +102,11 @@ var invitationVotingResultValidatorArray = [check('id').exists({
 }).trim().escape().isString().withMessage('Invalid Invitation ID')]
 
 
-var validatorfunction = (req, res) => {
+var validatorfunction = (req, res, next) => {
   const errorsFound = validationResult(req);
-  !errorsFound.isEmpty() ? (
-    res.status(422).json({
+  !errorsFound.isEmpty() ? (res.status(422).json({
       errors: errorsFound.mapped()
-    })) : (res.send({}));
+    })) : (next());
 };
 
 
