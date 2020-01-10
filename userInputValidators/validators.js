@@ -40,7 +40,7 @@ var userSignInValidatorArray = [
 ];
 
 var messagesStoreValidatorArray = [
-  check('messageContent').exists({
+  check('content').exists({
     checkFalsy: true
   }).trim().escape().withMessage('Message content must not be empty least'),
 ];

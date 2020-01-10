@@ -23,7 +23,8 @@ app.set('port', port);
 var server = http.createServer(app);
 
 // Pass server to Socket.io
-io(server);
+io = io(server);
+
 
 /**
  * Listen on provided port, on all network interfaces.
@@ -98,6 +99,17 @@ function onListening() {
  */
 
 io.on('connection', function (socket) {
-    console.log('a user connected');
-    console.log({socket});
+    // console.log('a user connected');
+    console.log(socket.id);
+    socket.on('join', function (bubbleId) {
+        socket.join(bubbleId);
+        console.log(bubbleId);
+        socket.on('message', (message)=>{
+            console.log({message});
+        })
+    });
 });
+
+module.exports.getIO = function(){
+    return io;
+}
