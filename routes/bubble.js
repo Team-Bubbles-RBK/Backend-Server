@@ -1,59 +1,86 @@
 const express = require('express');
 const router = express.Router();
-const BubbleModel = require('../models/Bubbles')
-const TokensModel =require("../models/Tokens")
-const sequelize = require("../models/index")
-const randomstring = require("randomstring");
-const crypto = require('crypto');
-const moment = require('moment');
+const BubbleModel = require('../models/Bubbles');
+const UserModel = require('../models/Users');
 const validators = require('../userInputValidators/validators');
 
 
-
-router.get("/",(req,res)=>{
+router.get("/", (req, res) => {
     res.send("test")
-})
+});
 
-router.post("/create", validators['bubbleCreateValidatorArray'], validators['validatorfunction'], (req,res)=>{
-    let data = req.body;
-    let bubbleName = data.name;
-    let permHash = randomstring.generate({
-        length: 16,
-        charset: data.name.toUpperCase()
-      });
-      let mykey = crypto.createCipher('aes-128-cbc', permHash);
-      let mystr = mykey.update(permHash, 'utf8', 'hex')
-      mystr += mykey.final('hex');
+router.get("/:id", validators['bubbleIdValidatorArray'], validators['validatorfunction'], (req, res) => {
+    const id = req.params.id;
 
-
-
-    BubbleModel.create({
-        name : bubbleName,
-        perm_link : mystr
-    })
-    TokensModel.create({
-        temp_Link : permHash
-    })
-    //drop column when it pass 24 hour
-    TokensModel.findAll({attributes: ["created_at"]}).then(function (res) {
-        let dateNow = moment(Date.now()).format("YYYY-MM-DD HH:mm:ss")
-        res.forEach(elm=>{
-            let diffBetweenDate = moment.utc(moment(dateNow).diff(moment(elm.dataValues.created_at,"DD/MM/YYYY HH:mm:ss"))).format("HH")
-            console.log(diffBetweenDate)
-            if(diffBetweenDate === "24"){
-                //for testing
-                TokensModel.destroy({
-                    where: {
-                        created_at : elm.dataValues.created_at
-                    }
-                })
-            }
+    BubbleModel.getBubbleInfo(id)
+        .then(bubble => {
+            res.json(bubble);
         })
-      });
+        .catch(err => {
+            res.sendStatus(500);
+        });
+});
+
+router.post("/create", validators['bubbleCreateValidatorArray'], validators['validatorfunction'], (req, res) => {
+    let {name} = req.body;
+
+    BubbleModel.createBubble(name)
+        .then(result => {
+            res.status(200).send(result);
+        })
+        .catch(err => {
+            res.sendStatus(500);
+        });
+});
+
+/****
+ * Generate temp Token for a bubble
+ * @param bubbleId
+ * @return the temp link hash
+ */
 
 
-    res.send('bubble created')
-})
+router.post('/temp-token', validators['bubbleIdValidatorArray'], validators['validatorfunction'], function (req, res) {
 
+    const {bubbleId} = req.body;
+    BubbleModel.generateToken(bubbleId)
+        .then(result => {
+            res.send(result.temp_link);
+        })
+        .catch(err => {
+            res.sendStatus(500);
+        });
+});
+
+/***
+ *  DELETE Method
+ *  allows user to leave a bubble
+ */
+router.delete('/leave', validators['bubbleLeaveValidatorArray'], validators['validatorfunction'], function (req, res) {
+
+    const {user_id, bubble_id} = req.body;
+
+    UserModel.leaveBubble(user_id, bubble_id)
+        .then(result => {
+            console.log({result});
+            res.status(200).send();
+        })
+        .catch(err => {
+            res.sendStatus(500);
+        });
+});
+
+router.post('/join', validators['bubbleJoinValidatorArray'], validators['bubbleJoinValidatorArray'], function (req, res) {
+
+    const {user_id, bubble_id} = req.body;
+
+    UserModel.joinBubble(user_id, bubble_id)
+        .then(result => {
+            res.status(200).send();
+        })
+        .catch(err => {
+            res.sendStatus(500);
+        });
+});
 
 module.exports = router;
