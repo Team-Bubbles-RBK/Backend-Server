@@ -13,7 +13,7 @@ router.post("/store", passport.authenticate('jwt', {session: false}), validators
     validators['validatorfunction'], (req, res) => {
 
         let {content, bubble_id} = req.body;
-        user_id = req.user.id;
+        const user_id = req.user.id;
 
         MessagesModel.store(
             content,
