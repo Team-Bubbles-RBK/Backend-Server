@@ -3,6 +3,7 @@ var router = express.Router();
 const UsersModel = require('../models/Users');
 const passport = require('passport');
 const validators = require('../userInputValidators/validators');
+const verifyToken = require('../lib/auth');
 
 /* GET users listing. */
 router.get("/", function (req, res, next) {
@@ -107,6 +108,20 @@ router.get('/profile', validators['userIdValidatorArray'], validators['validator
         .catch(err => {
             res.status(500).send();
         });
+});
+
+/***
+ * Check if the provided token represent a
+ * a user and its valid
+ */
+router.post('/check', function (req, res) {
+    let {token} = req.body;
+
+    verifyToken(token).then(result => {
+        res.status(200).send(true);
+    }).catch(err => {
+        res.status(401).send(err);
+    });
 });
 
 module.exports = router;
