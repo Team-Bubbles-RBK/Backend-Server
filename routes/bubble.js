@@ -9,7 +9,7 @@ router.get("/", (req, res) => {
     res.send("test")
 });
 
-router.get("/:id", (req, res) => {
+router.get("/:id", validators['bubbleIdValidatorArray'], validators['validatorfunction'], (req, res) => {
     const id = req.params.id;
 
     BubbleModel.getBubbleInfo(id)
@@ -38,8 +38,9 @@ router.post("/create", validators['bubbleCreateValidatorArray'], validators['val
  * @param bubbleId
  * @return the temp link hash
  */
-router.post('/temp-token', function (req, res) {
-    // Todo validation
+
+
+router.post('/temp-token', validators['bubbleIdValidatorArray'], validators['validatorfunction'], function (req, res) {
 
     const {bubbleId} = req.body;
     BubbleModel.generateToken(bubbleId)
@@ -55,8 +56,8 @@ router.post('/temp-token', function (req, res) {
  *  DELETE Method
  *  allows user to leave a bubble
  */
-router.delete('/leave', function (req, res) {
-    // Todo validation
+router.delete('/leave', validators['bubbleLeaveValidatorArray'], validators['validatorfunction'], function (req, res) {
+
     const {user_id, bubble_id} = req.body;
 
     UserModel.leaveBubble(user_id, bubble_id)
@@ -69,8 +70,8 @@ router.delete('/leave', function (req, res) {
         });
 });
 
-router.post('/join', function (req, res) {
-    // Todo validation
+router.post('/join', validators['bubbleJoinValidatorArray'], validators['bubbleJoinValidatorArray'], function (req, res) {
+
     const {user_id, bubble_id} = req.body;
 
     UserModel.joinBubble(user_id, bubble_id)
