@@ -98,7 +98,10 @@ router.get("/:id/bubbles", validators['userIdValidatorArray'], validators['valid
  * Including array of invitations that has array of votes
  * and bubble information for each invitation
  */
-router.get('/profile', validators['userIdValidatorArray'], validators['validatorfunction'], passport.authenticate('jwt', {session: false}), function (req, res) {
+
+// No validation is required here
+
+router.get('/profile', passport.authenticate('jwt', {session: false}), function (req, res) {
     const id = req.user.id;
 
     UsersModel.getUserInfo(id)

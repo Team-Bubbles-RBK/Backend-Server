@@ -9,7 +9,8 @@ router.get("/", (req, res) => {
     res.send("test")
 });
 
-router.get("/:id", validators['bubbleIdValidatorArray'], validators['validatorfunction'], (req, res) => {
+// No validation required
+router.get("/:id", (req, res) => {
     const id = req.params.id;
 
     BubbleModel.getBubbleInfo(id)
