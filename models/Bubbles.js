@@ -90,7 +90,7 @@ class Bubbles extends Model {
      */
     static getBubbleInfo(bubbleId) {
         return this.findByPk(bubbleId, {
-            include: [{model: Invitations}]
+            include: [{model: Invitations},{model:Messages}]
         });
     }
 }

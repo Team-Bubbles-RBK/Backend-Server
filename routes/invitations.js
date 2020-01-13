@@ -1,6 +1,8 @@
 var express = require("express");
 var router = express.Router();
 const InvitationsModel = require("../models/Invitations");
+const validators = require('../userInputValidators/validators');
+
 
 router.get("/", (req, res, next) => {
     res.send("respond from invitations");
@@ -10,7 +12,8 @@ router.get("/", (req, res, next) => {
  * Get result of Voting
  * Expects bubble_id as get parameter
  */
-router.get('/voting/result/:id', (req, res) => {
+router.get('/voting/result/:id',validators['invitationVotingResultValidatorArray'], validators['validatorfunction'], (req, res) => {
+
     let invite_id = req.params.id;
 
     InvitationsModel.result(invite_id)
@@ -22,7 +25,8 @@ router.get('/voting/result/:id', (req, res) => {
         });
 });
 
-router.delete('/:id', (req, res) => {
+router.delete('/:id',validators['deleteInvitationsValidatorArray'], validators['validatorfunction'], (req, res) => {
+
     let id = req.params.id;
 
     InvitationsModel.remove(id)
@@ -45,8 +49,8 @@ router.delete('/:id', (req, res) => {
  */
 
 // This to be used when the user sign up or sign up following a invitation link
-router.post("/generate", (req, res) => {
-    //Todo validation
+router.post("/generate", validators['generateInvitationsValidatorArray'], validators['validatorfunction'], (req, res) => {
+
     let {bubble_id, invitee_id} = req.body;
 
     InvitationsModel.generate(invitee_id, bubble_id)
@@ -59,8 +63,8 @@ router.post("/generate", (req, res) => {
 });
 
 
-router.post('/vote', function (req, res) {
-    // Todo validation
+router.post('/vote', validators['invitationsVoteValidatorArray'], validators['validatorfunction'], function (req, res) {
+
     const {invitationId, voterId, vote} = req.body;
 
     InvitationsModel.vote(invitationId, voterId, vote)
