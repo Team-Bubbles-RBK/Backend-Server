@@ -32,7 +32,7 @@ var userSignInValidatorArray = [
   check('username').exists({
     checkFalsy: true
   }).trim().escape().isString().isEmail().normalizeEmail().withMessage('Invalid Email'),
-  check('hash').exists({
+  check('password').exists({
     checkFalsy: true
   }).trim().escape().isString().isLength({
     min: 8

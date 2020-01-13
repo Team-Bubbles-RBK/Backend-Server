@@ -3,6 +3,7 @@ var router = express.Router();
 const UsersModel = require('../models/Users');
 const passport = require('passport');
 const validators = require('../userInputValidators/validators');
+const verifyToken = require('../lib/auth');
 
 /* GET users listing. */
 router.get("/", function (req, res, next) {
@@ -97,7 +98,10 @@ router.get("/:id/bubbles", validators['userIdValidatorArray'], validators['valid
  * Including array of invitations that has array of votes
  * and bubble information for each invitation
  */
-router.get('/profile', validators['userIdValidatorArray'], validators['validatorfunction'], passport.authenticate('jwt', {session: false}), function (req, res) {
+
+// No validation is required here
+
+router.get('/profile', passport.authenticate('jwt', {session: false}), function (req, res) {
     const id = req.user.id;
 
     UsersModel.getUserInfo(id)
@@ -107,6 +111,20 @@ router.get('/profile', validators['userIdValidatorArray'], validators['validator
         .catch(err => {
             res.status(500).send();
         });
+});
+
+/***
+ * Check if the provided token represent a
+ * a user and its valid
+ */
+router.post('/check', function (req, res) {
+    let {token} = req.body;
+
+    verifyToken(token).then(result => {
+        res.status(200).send(true);
+    }).catch(err => {
+        res.status(401).send(err);
+    });
 });
 
 module.exports = router;

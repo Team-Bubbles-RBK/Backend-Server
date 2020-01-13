@@ -101,6 +101,7 @@ function onListening() {
 io.on('connection', function (socket) {
     console.log(`a user connected, socket id: ${socket.id}`);
     socket.on('join', function (bubbleId) {
+        console.log({bubbleId});
         socket.join(bubbleId);
         // socket.on('message', (message)=>{
         //     console.log({message});
